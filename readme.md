@@ -5,6 +5,8 @@ This repo demonstrates a simple graphql server making calls to donwstream gRPC s
 ### Quickstart
 TODO
 
+*NOTE:* there are [issues](https://github.com/99designs/gqlgen/issues/800) running the GqlGen generator if you have vendored dependencies. The easiest workaround is to delete the `vendor/` folder when you generate.
+
 ### Concepts
 
 *Dataloader*

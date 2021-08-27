@@ -2,7 +2,9 @@ package resolver
 
 //go:generate go run github.com/99designs/gqlgen generate
 
-import "github.com/troopdev/gqlgen-todos/graph/model"
+import (
+	"github.com/troopdev/gqlgen-todos/graph/model"
+)
 
 // This file will not be regenerated automatically.
 //
