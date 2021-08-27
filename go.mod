@@ -1,4 +1,4 @@
-module github.com/troopdev/gqlgen-todos
+module github.com/troopdev/graphql-poc
 
 go 1.16
 

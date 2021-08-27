@@ -7,8 +7,8 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/troopdev/gqlgen-todos/graph/generated"
-	"github.com/troopdev/gqlgen-todos/graph/resolver"
+	"github.com/troopdev/graphql-poc/graph/generated"
+	"github.com/troopdev/graphql-poc/graph/resolver"
 )
 
 const defaultPort = "8080"

@@ -3,7 +3,7 @@ package resolver
 //go:generate go run github.com/99designs/gqlgen generate
 
 import (
-	"github.com/troopdev/gqlgen-todos/graph/model"
+	"github.com/troopdev/graphql-poc/graph/model"
 )
 
 // This file will not be regenerated automatically.

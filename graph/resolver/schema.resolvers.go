@@ -9,8 +9,8 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/troopdev/gqlgen-todos/graph/generated"
-	"github.com/troopdev/gqlgen-todos/graph/model"
+	"github.com/troopdev/graphql-poc/graph/generated"
+	"github.com/troopdev/graphql-poc/graph/model"
 )
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
