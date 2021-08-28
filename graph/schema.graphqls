@@ -17,6 +17,7 @@ type User {
 type Query {
   todos: [Todo!]!
   getTodo(id: String!): Todo!
+  getUser(id: String!): User!
 }
 
 input NewTodo {
@@ -26,6 +27,7 @@ input NewTodo {
 
 input NewUser {
   name: String!
+  userId: String
 }
 
 type Mutation {

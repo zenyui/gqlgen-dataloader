@@ -18,5 +18,6 @@ type User struct {
 }
 
 type NewUser struct {
-	Name string `json:"name"`
+	Name   string `json:"name"`
+	UserID string `json:"userId"`
 }
