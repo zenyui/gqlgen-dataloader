@@ -19,10 +19,11 @@ This repo demonstrates a simple [GqlGen](https://gqlgen.com/) graphql server usi
 
 ### Build & run the app
 ```sh
-# run the app
+# run the app, then navigate to http://localhost:8080/
 go run ./server.go
 
 # run GqlGen (to generate new resolvers & models)
+go get github.com/99designs/gqlgen
 go generate ./...
 ```
 
