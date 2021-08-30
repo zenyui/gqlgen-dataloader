@@ -17,14 +17,52 @@ This repo demonstrates a simple [GqlGen](https://gqlgen.com/) graphql server usi
 ```
 
 
-### Build & run the app
+### Run the app
 ```sh
 # run the app, then navigate to http://localhost:8080/
 go run ./server.go
+```
 
+Once the app server is running you can create the user...
+```graphql
+mutation createUser {
+  createUser(input: {name: "foo", userId:"1"}) {
+    id
+  }
+}
+```
+
+Create a todo...
+```graphql
+mutation createTodo {
+  createTodo(input:{
+    text:"bar",
+    userId:"1"
+  }) {
+    id
+  }
+}
+```
+
+And observe the data loader in action!
+```graphql
+query {
+  listTodos {
+    id
+    text
+    user {
+      name
+    }
+  }
+}
+```
+
+```sh
 # run GqlGen (to generate new resolvers & models)
 go get github.com/99designs/gqlgen
 go generate ./...
 ```
+
+### A note about generation
 
 *NOTE:* there are [issues](https://github.com/99designs/gqlgen/issues/800) running the GqlGen generator if you have vendored dependencies. The easiest workaround is to delete the `vendor/` folder when you generate.
