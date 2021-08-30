@@ -3,7 +3,7 @@ package resolver
 //go:generate go run github.com/99designs/gqlgen generate
 
 import (
-	"github.com/troopdev/graphql-poc/graph/storage"
+	"github.com/zenyui/gqlgen-dataloader/graph/storage"
 )
 
 // Resolver serves as dependency injection for your app

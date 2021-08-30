@@ -8,9 +8,9 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/troopdev/graphql-poc/graph/dataloader"
-	"github.com/troopdev/graphql-poc/graph/generated"
-	"github.com/troopdev/graphql-poc/graph/model"
+	"github.com/zenyui/gqlgen-dataloader/graph/dataloader"
+	"github.com/zenyui/gqlgen-dataloader/graph/generated"
+	"github.com/zenyui/gqlgen-dataloader/graph/model"
 )
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {

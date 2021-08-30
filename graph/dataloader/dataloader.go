@@ -9,8 +9,8 @@ import (
 
 	"github.com/graph-gophers/dataloader"
 	gopher_dataloader "github.com/graph-gophers/dataloader"
-	"github.com/troopdev/graphql-poc/graph/model"
-	"github.com/troopdev/graphql-poc/graph/storage"
+	"github.com/zenyui/gqlgen-dataloader/graph/model"
+	"github.com/zenyui/gqlgen-dataloader/graph/storage"
 )
 
 const (

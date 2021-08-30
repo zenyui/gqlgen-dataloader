@@ -3,7 +3,7 @@ package storage
 import (
 	"context"
 
-	"github.com/troopdev/graphql-poc/graph/model"
+	"github.com/zenyui/gqlgen-dataloader/graph/model"
 )
 
 // Storage provides methods for reading/writing Users and Todos to a datastore

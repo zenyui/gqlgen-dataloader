@@ -1,4 +1,4 @@
-module github.com/troopdev/graphql-poc
+module github.com/zenyui/gqlgen-dataloader
 
 go 1.16
 

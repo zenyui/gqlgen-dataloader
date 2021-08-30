@@ -7,10 +7,10 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/troopdev/graphql-poc/graph/dataloader"
-	"github.com/troopdev/graphql-poc/graph/generated"
-	"github.com/troopdev/graphql-poc/graph/resolver"
-	"github.com/troopdev/graphql-poc/graph/storage"
+	"github.com/zenyui/gqlgen-dataloader/graph/dataloader"
+	"github.com/zenyui/gqlgen-dataloader/graph/generated"
+	"github.com/zenyui/gqlgen-dataloader/graph/resolver"
+	"github.com/zenyui/gqlgen-dataloader/graph/storage"
 )
 
 const defaultPort = "8080"
