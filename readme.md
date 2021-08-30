@@ -1,6 +1,6 @@
-# Graphql POC
+# GqlGen graphql server with dataloader
 
-This repo demonstrates a simple [GqlGen](https://gqlgen.com/) graphql server using the [graph-gophers/dataloader](https://github.com/graph-gophers/dataloader). This service is based on the GqlGen "Todo" sample app, and the dataloader middleware is inspired by [vektah/dataloaden](https://github.com/vektah/dataloaden).
+This repo demonstrates a simple [GqlGen](https://gqlgen.com/) graphql server using the [graph-gophers/dataloader](https://github.com/graph-gophers/dataloader). This service is based on the GqlGen "Todo" sample app, and the dataloader middleware is inspired by [vektah/dataloaden](https://github.com/vektah/dataloaden). Unlike vekta/dataloaden, this dataloader does not rely on code generation.
 
 ### Project Structure
 ```sh
