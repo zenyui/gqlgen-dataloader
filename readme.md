@@ -57,12 +57,12 @@ query {
 }
 ```
 
+### Building the app
+
 ```sh
 # run GqlGen (to generate new resolvers & models)
 go get github.com/99designs/gqlgen
 go generate ./...
 ```
-
-### A note about generation
 
 *NOTE:* there are [issues](https://github.com/99designs/gqlgen/issues/800) running the GqlGen generator if you have vendored dependencies. The easiest workaround is to delete the `vendor/` folder when you generate.
