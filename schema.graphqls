@@ -15,7 +15,7 @@ type User {
 }
 
 type Query {
-  todos: [Todo!]!
+  listTodos: [Todo!]!
   getTodo(id: String!): Todo!
   getUser(id: String!): User!
 }

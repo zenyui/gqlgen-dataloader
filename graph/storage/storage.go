@@ -2,24 +2,31 @@ package storage
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/troopdev/graphql-poc/graph/model"
 )
 
+// Storage provides methods for reading/writing Users and Todos to a datastore
 type Storage interface {
+	// PutUser persists a User
 	PutUser(ctx context.Context, usr *model.User) error
+	// PutTodo persists a Todo
 	PutTodo(ctx context.Context, todo *model.Todo) error
+	// GetUsers accepts many user IDs and returns an array of matching Users
 	GetUsers(ctx context.Context, ids []string) ([]*model.User, error)
+	// GetTodos accepts many Todo IDs and returns an array of matching Todos
 	GetTodos(ctx context.Context, ids []string) ([]*model.Todo, error)
+	// GetAllTodos lists all Todo's in the database
 	GetAllTodos(ctx context.Context) ([]*model.Todo, error)
 }
 
+// MemoryStorage implements the Storage methods in memory as golang maps
 type MemoryStorage struct {
 	todos map[string]*model.Todo
 	users map[string]*model.User
 }
 
+// NewMemoryStorage returns a MemoryStorage with internal maps initialized
 func NewMemoryStorage() *MemoryStorage {
 	return &MemoryStorage{
 		todos: make(map[string]*model.Todo),
@@ -38,7 +45,6 @@ func (m *MemoryStorage) PutTodo(ctx context.Context, todo *model.Todo) error {
 }
 
 func (m *MemoryStorage) GetUsers(ctx context.Context, ids []string) ([]*model.User, error) {
-	fmt.Println("calling MemoryStorage.GetUsers")
 	output := make([]*model.User, 0, len(ids))
 	for _, id := range ids {
 		if usr, ok := m.users[id]; ok {
