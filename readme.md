@@ -1,17 +1,29 @@
 # Graphql POC
 
-This repo demonstrates a simple graphql server making calls to donwstream gRPC services using the [GqlGen](https://gqlgen.com/) library.
+This repo demonstrates a simple [GqlGen](https://gqlgen.com/) graphql server using the [graph-gophers/dataloader](https://github.com/graph-gophers/dataloader). This service is based on the GqlGen "Todo" sample app, and the dataloader middleware is inspired by [vektah/dataloaden](https://github.com/vektah/dataloaden).
 
-### Quickstart
-TODO
+### Project Structure
+```sh
+.
+├── gqlgen.yml # GqlGen configuration
+├── graph
+│   ├── dataloader # implements the user dataloader
+│   ├── generated # GqlGen generated files
+│   ├── model # defines User and Todo model structs
+│   ├── resolver # implements the graphql queries/mutations
+│   └── storage # mock datastore for use in dataloader
+├── schema.graphqls # graphql schema definition
+└── server.go # runnable server
+```
+
+
+### Build & run the app
+```sh
+# run the app
+go run ./server.go
+
+# run GqlGen (to generate new resolvers & models)
+go generate ./...
+```
 
 *NOTE:* there are [issues](https://github.com/99designs/gqlgen/issues/800) running the GqlGen generator if you have vendored dependencies. The easiest workaround is to delete the `vendor/` folder when you generate.
-
-### Concepts
-
-*Dataloader*
-
-From the authors:
-> DataLoader is a generic utility to be used as part of your application's data fetching layer to provide a consistent API over various backends and reduce requests to those backends via batching and caching.
-
-Dataloaders are used in graphql to reduce the number of round-trips to a given data store. For example, consider you are modeling graph with a `Team` object that contains many `User` objects and a `listTeams` query that returns an array of teams and their nested users. Instead of fetching each user from the database individually, a dataloader could implement bulk-fetching of `User` records by key, and the graphql server can even cache those user records in case they appear in many teams.
