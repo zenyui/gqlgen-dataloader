@@ -35,10 +35,7 @@ mutation createUser {
 Create a todo...
 ```graphql
 mutation createTodo {
-  createTodo(input:{
-    text:"bar",
-    userId:"1"
-  }) {
+  createTodo(input:{text:"bar", userId:"1"}) {
     id
   }
 }
