@@ -2,7 +2,6 @@ package dataloader
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"net/http"
 	"strings"
@@ -97,7 +96,7 @@ func (u *userBatcher) get(ctx context.Context, keys dataloader.Keys) []*dataload
 	}
 	// fill array positions with errors where not found in DB
 	for userID, ix := range keyOrder {
-		err := errors.New(fmt.Sprintf("user not found %s", userID))
+		err := fmt.Errorf("user not found %s", userID)
 		results[ix] = &dataloader.Result{Data: nil, Error: err}
 	}
 	// return results
