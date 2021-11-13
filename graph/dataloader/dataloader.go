@@ -34,7 +34,7 @@ func (i *DataLoader) GetUser(userID string) (*model.User, error) {
 }
 
 // NewDataLoader returns the instantiated Loaders struct for use in a request
-func NewDataLoader(ctx context.Context, db storage.Storage) *DataLoader {
+func NewDataLoader(db storage.Storage) *DataLoader {
 	// instantiate the user dataloader
 	users := &userBatcher{db: db}
 	// return the DataLoader
@@ -46,8 +46,8 @@ func NewDataLoader(ctx context.Context, db storage.Storage) *DataLoader {
 // Middleware injects a DataLoader into the request context so it can be
 // used later in the schema resolvers
 func Middleware(db storage.Storage, next http.Handler) http.Handler {
+	loaders := NewDataLoader(r.Context(), db)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		loaders := NewDataLoader(r.Context(), db)
 		nextCtx := context.WithValue(r.Context(), loadersKey, loaders)
 		r = r.WithContext(nextCtx)
 		next.ServeHTTP(w, r)
