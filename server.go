@@ -22,12 +22,14 @@ func main() {
 	}
 	// instantiate the DB client
 	db := storage.NewMemoryStorage()
+	// make a data loader
+	loader := dataloader.NewDataLoader(db)
 	// instantiate the gqlgen Graph Resolver
 	graphResolver := resolver.NewResolver(db)
 	// create the query handler
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: graphResolver}))
 	// wrap the query handler with middleware to inject dataloader
-	dataloaderSrv := dataloader.Middleware(db, srv)
+	dataloaderSrv := dataloader.Middleware(loader, srv)
 	// register the query endpoint
 	http.Handle("/query", dataloaderSrv)
 	// register the playground
