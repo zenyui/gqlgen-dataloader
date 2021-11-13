@@ -13,8 +13,10 @@ import (
 	"github.com/zenyui/gqlgen-dataloader/graph/storage"
 )
 
+type ctxKey string
+
 const (
-	loadersKey = "dataloaders"
+	loadersKey = ctxKey("dataloaders")
 )
 
 // DataLoader offers data loaders scoped to a context
