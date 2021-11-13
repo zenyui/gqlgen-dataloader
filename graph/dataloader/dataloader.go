@@ -48,7 +48,7 @@ func NewDataLoader(db storage.Storage) *DataLoader {
 // Middleware injects a DataLoader into the request context so it can be
 // used later in the schema resolvers
 func Middleware(db storage.Storage, next http.Handler) http.Handler {
-	loaders := NewDataLoader(r.Context(), db)
+	loaders := NewDataLoader(db)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		nextCtx := context.WithValue(r.Context(), loadersKey, loaders)
 		r = r.WithContext(nextCtx)
