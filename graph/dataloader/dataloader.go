@@ -38,9 +38,14 @@ func (i *DataLoader) GetUser(userID string) (*model.User, error) {
 func NewDataLoader(db storage.Storage) *DataLoader {
 	// instantiate the user dataloader
 	users := &userBatcher{db: db}
+	// disable caching for this sample repo
+	cache := &dataloader.NoCache{}
 	// return the DataLoader
 	return &DataLoader{
-		userLoader: dataloader.NewBatchedLoader(users.get),
+		userLoader: dataloader.NewBatchedLoader(
+			users.get,
+			dataloader.WithCache(cache),
+		),
 	}
 }
 
