@@ -73,7 +73,7 @@ func (r *queryResolver) GetUser(ctx context.Context, id string) (*model.User, er
 
 func (r *todoResolver) User(ctx context.Context, obj *model.Todo) (*model.User, error) {
 	fmt.Printf("todoResolver.User, todo=%s, user=%s\n", obj.ID, obj.UserID)
-	return dataloader.For(ctx).GetUser(ctx, obj.UserID)
+	return dataloader.GetUser(ctx, obj.UserID)
 }
 
 // Mutation returns generated.MutationResolver implementation.

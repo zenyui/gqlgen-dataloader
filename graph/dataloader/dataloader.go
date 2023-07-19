@@ -24,8 +24,12 @@ type DataLoader struct {
 }
 
 // GetUser wraps the User dataloader for efficient retrieval by user ID
-func (i *DataLoader) GetUser(ctx context.Context, userID string) (*model.User, error) {
-	thunk := i.userLoader.Load(ctx, gopher_dataloader.StringKey(userID))
+func GetUser(ctx context.Context, userID string) (*model.User, error) {
+	// read loader from context
+	loaders := ctx.Value(loadersKey).(*DataLoader)
+	// invoke and get thunk
+	thunk := loaders.userLoader.Load(ctx, gopher_dataloader.StringKey(userID))
+	// read value from thunk
 	result, err := thunk()
 	if err != nil {
 		return nil, err
@@ -37,25 +41,26 @@ func (i *DataLoader) GetUser(ctx context.Context, userID string) (*model.User, e
 func NewDataLoader(db storage.Storage) *DataLoader {
 	// instantiate the user dataloader
 	users := &userBatcher{db: db}
+	// disable caching for this sample repo
+	cache := &dataloader.NoCache{}
 	// return the DataLoader
 	return &DataLoader{
-		userLoader: dataloader.NewBatchedLoader(users.get),
+		userLoader: dataloader.NewBatchedLoader(
+			users.get,
+			dataloader.WithCache(cache),
+		),
 	}
 }
 
 // Middleware injects a DataLoader into the request context so it can be
 // used later in the schema resolvers
-func Middleware(loader *DataLoader, next http.Handler) http.Handler {
+func Middleware(db storage.Storage, next http.Handler) http.Handler {
+	loader := NewDataLoader(db)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		nextCtx := context.WithValue(r.Context(), loadersKey, loader)
 		r = r.WithContext(nextCtx)
 		next.ServeHTTP(w, r)
 	})
-}
-
-// For returns the dataloader for a given context
-func For(ctx context.Context) *DataLoader {
-	return ctx.Value(loadersKey).(*DataLoader)
 }
 
 // userBatcher wraps storage and provides a "get" method for the user dataloader
