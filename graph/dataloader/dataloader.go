@@ -20,13 +20,16 @@ const (
 
 // DataLoader offers data loaders scoped to a context
 type DataLoader struct {
-	ctx        context.Context
 	userLoader *dataloader.Loader
 }
 
 // GetUser wraps the User dataloader for efficient retrieval by user ID
-func (i *DataLoader) GetUser(userID string) (*model.User, error) {
-	thunk := i.userLoader.Load(i.ctx, gopher_dataloader.StringKey(userID))
+func GetUser(ctx context.Context, userID string) (*model.User, error) {
+	// read loader from context
+	loaders := ctx.Value(loadersKey).(*DataLoader)
+	// invoke and get thunk
+	thunk := loaders.userLoader.Load(ctx, gopher_dataloader.StringKey(userID))
+	// read value from thunk
 	result, err := thunk()
 	if err != nil {
 		return nil, err
@@ -51,18 +54,13 @@ func NewDataLoader(db storage.Storage) *DataLoader {
 
 // Middleware injects a DataLoader into the request context so it can be
 // used later in the schema resolvers
-func Middleware(loader *DataLoader, next http.Handler) http.Handler {
-
+func Middleware(db storage.Storage, next http.Handler) http.Handler {
+	loader := NewDataLoader(db)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		nextCtx := context.WithValue(r.Context(), loadersKey, loader)
 		r = r.WithContext(nextCtx)
 		next.ServeHTTP(w, r)
 	})
-}
-
-// For returns the dataloader for a given context
-func For(ctx context.Context) *DataLoader {
-	return ctx.Value(loadersKey).(*DataLoader)
 }
 
 // userBatcher wraps storage and provides a "get" method for the user dataloader
