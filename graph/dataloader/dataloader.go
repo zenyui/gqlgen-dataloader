@@ -80,14 +80,17 @@ func (u *userBatcher) get(ctx context.Context, keys dataloader.Keys) []*dataload
 		userIDs = append(userIDs, key.String())
 		keyOrder[key.String()] = ix
 	}
+	// construct an output array of dataloader results
+	results := make([]*dataloader.Result, len(keys))
 	// search for those users
 	dbRecords, err := u.db.GetUsers(ctx, userIDs)
 	// if DB error, return
 	if err != nil {
-		return []*dataloader.Result{{Data: nil, Error: err}}
+		for i := 0; i < len(results); i++ {
+			results[i] = &dataloader.Result{Error: err}
+		}
+		return results
 	}
-	// construct an output array of dataloader results
-	results := make([]*dataloader.Result, len(keys))
 	// enumerate records, put into output
 	for _, record := range dbRecords {
 		ix, ok := keyOrder[record.ID]
