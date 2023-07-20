@@ -2,6 +2,7 @@ package storage
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/zenyui/gqlgen-dataloader/graph/model"
 )
@@ -45,6 +46,7 @@ func (m *MemoryStorage) PutTodo(ctx context.Context, todo *model.Todo) error {
 }
 
 func (m *MemoryStorage) GetUsers(ctx context.Context, ids []string) ([]*model.User, error) {
+	fmt.Printf("GetUsers %v\n", ids)
 	output := make([]*model.User, 0, len(ids))
 	for _, id := range ids {
 		if usr, ok := m.users[id]; ok {

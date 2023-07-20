@@ -41,13 +41,10 @@ func GetUser(ctx context.Context, userID string) (*model.User, error) {
 func NewDataLoader(db storage.Storage) *DataLoader {
 	// instantiate the user dataloader
 	users := &userBatcher{db: db}
-	// disable caching for this sample repo
-	cache := &dataloader.NoCache{}
 	// return the DataLoader
 	return &DataLoader{
 		userLoader: dataloader.NewBatchedLoader(
 			users.get,
-			dataloader.WithCache(cache),
 		),
 	}
 }
@@ -55,8 +52,8 @@ func NewDataLoader(db storage.Storage) *DataLoader {
 // Middleware injects a DataLoader into the request context so it can be
 // used later in the schema resolvers
 func Middleware(db storage.Storage, next http.Handler) http.Handler {
-	loader := NewDataLoader(db)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		loader := NewDataLoader(db)
 		nextCtx := context.WithValue(r.Context(), loadersKey, loader)
 		r = r.WithContext(nextCtx)
 		next.ServeHTTP(w, r)
