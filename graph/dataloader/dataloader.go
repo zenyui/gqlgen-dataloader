@@ -6,8 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/graph-gophers/dataloader"
-	gopher_dataloader "github.com/graph-gophers/dataloader"
+	gopher_dataloader "github.com/graph-gophers/dataloader/v7"
 	"github.com/zenyui/gqlgen-dataloader/graph/model"
 	"github.com/zenyui/gqlgen-dataloader/graph/storage"
 )
@@ -20,7 +19,7 @@ const (
 
 // DataLoader offers data loaders scoped to a context
 type DataLoader struct {
-	userLoader *dataloader.Loader
+	userLoader *gopher_dataloader.Loader[string, *model.User]
 }
 
 // GetUser wraps the User dataloader for efficient retrieval by user ID
@@ -28,13 +27,13 @@ func GetUser(ctx context.Context, userID string) (*model.User, error) {
 	// read loader from context
 	loaders := ctx.Value(loadersKey).(*DataLoader)
 	// invoke and get thunk
-	thunk := loaders.userLoader.Load(ctx, gopher_dataloader.StringKey(userID))
+	thunk := loaders.userLoader.Load(ctx, userID)
 	// read value from thunk
 	result, err := thunk()
 	if err != nil {
 		return nil, err
 	}
-	return result.(*model.User), nil
+	return result, nil
 }
 
 // NewDataLoader returns the instantiated Loaders struct for use in a request
@@ -42,9 +41,11 @@ func NewDataLoader(db storage.Storage) *DataLoader {
 	// instantiate the user dataloader
 	users := &userBatcher{db: db}
 	// return the DataLoader
+	cache := &gopher_dataloader.NoCache[string, *model.User]{}
 	return &DataLoader{
-		userLoader: dataloader.NewBatchedLoader(
+		userLoader: gopher_dataloader.NewBatchedLoader[string, *model.User](
 			users.get,
+			gopher_dataloader.WithCache[string, *model.User](cache),
 		),
 	}
 }
@@ -67,24 +68,24 @@ type userBatcher struct {
 
 // get implements the dataloader for finding many users by Id and returns
 // them in the order requested
-func (u *userBatcher) get(ctx context.Context, keys dataloader.Keys) []*dataloader.Result {
-	fmt.Printf("dataloader.userBatcher.get, users: [%s]\n", strings.Join(keys.Keys(), ","))
+func (u *userBatcher) get(ctx context.Context, keys []string) []*gopher_dataloader.Result[*model.User] {
+	fmt.Printf("dataloader.userBatcher.get, users: [%s]\n", strings.Join(keys, ","))
 	// create a map for remembering the order of keys passed in
 	keyOrder := make(map[string]int, len(keys))
 	// collect the keys to search for
 	var userIDs []string
 	for ix, key := range keys {
-		userIDs = append(userIDs, key.String())
-		keyOrder[key.String()] = ix
+		userIDs = append(userIDs, key)
+		keyOrder[key] = ix
 	}
 	// construct an output array of dataloader results
-	results := make([]*dataloader.Result, len(keys))
+	results := make([]*gopher_dataloader.Result[*model.User], len(keys))
 	// search for those users
 	dbRecords, err := u.db.GetUsers(ctx, userIDs)
 	// if DB error, return
 	if err != nil {
 		for i := 0; i < len(results); i++ {
-			results[i] = &dataloader.Result{Error: err}
+			results[i] = &gopher_dataloader.Result[*model.User]{Error: err}
 		}
 		return results
 	}
@@ -93,14 +94,14 @@ func (u *userBatcher) get(ctx context.Context, keys dataloader.Keys) []*dataload
 		ix, ok := keyOrder[record.ID]
 		// if found, remove from index lookup map so we know elements were found
 		if ok {
-			results[ix] = &dataloader.Result{Data: record, Error: nil}
+			results[ix] = &gopher_dataloader.Result[*model.User]{Data: record, Error: nil}
 			delete(keyOrder, record.ID)
 		}
 	}
 	// fill array positions with errors where not found in DB
 	for userID, ix := range keyOrder {
 		err := fmt.Errorf("user not found %s", userID)
-		results[ix] = &dataloader.Result{Data: nil, Error: err}
+		results[ix] = &gopher_dataloader.Result[*model.User]{Data: nil, Error: err}
 	}
 	// return results
 	return results
